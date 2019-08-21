@@ -16,5 +16,22 @@ game.Players.PlayerAdded:Connect(function(plr)
     kill.Value = 0
 
     -- obtenir la save
-    local data = saveDataStore
+    local data = saveDataStore:GetAsync(plr.UserId)
+    if data then
+        for i, v in pairs(leaderstats:GetChildren()) do
+            v.Value = data[v.Name]
+        end
+    end
+end)
+
+-- Save quand le joueur leave
+game.Players.PlayerRemoving:Connect(function()
+    local leaderstats = plr:FindFirstChild("leaderstats")
+    local saveData = {}
+    if leaderstats then
+        for i, v in pairs(leaderstats:GetChildren()) do
+            saveData[v.Name] = v.Value
+        end
+        saveDataStore:SetAsync(plr.UserId, saveData)
+    end
 end)
